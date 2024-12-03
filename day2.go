@@ -56,14 +56,13 @@ func isAscending(row Row) bool {
 			negativeDeltaCount++
 		}
 	}
-
 	return positiveDeltaCount > negativeDeltaCount
 }
 
-func increasedLowerIndex(lowerIndex int, upperIndex int, unsafeLevels []int) int {
+func increasedLowerIndex(lowerIndex int, arrayLen int, unsafeLevels []int) int {
 	potentialNewIndex := lowerIndex + 1
 
-	for potentialNewIndex < upperIndex {
+	for potentialNewIndex < arrayLen {
 		valid := true
 
 		for _, unsafeIndex := range(unsafeLevels) {
@@ -86,6 +85,64 @@ func areLevelsValid(lowerValue int, upperValue int, ascending bool) bool {
 	directionValid := isDirectionValid(ascending, lowerValue, upperValue)
 	increaseValid := isIncreaseValid(lowerValue, upperValue)
 	return directionValid && increaseValid
+}
+
+func moveIndexesWindow(indexesWindow []int, invalidIndexes []int) []int {
+	lowestIndex := indexesWindow[0]
+	newLowIndex := increasedLowerIndex(lowestIndex, 100, invalidIndexes)
+	newMidIndex := increasedLowerIndex(newLowIndex, 100, invalidIndexes)
+
+	return []int{newLowIndex, newMidIndex, newMidIndex + 1}
+}
+
+func isRowValidWindow(row Row) bool {
+	ascending := isAscending(row)
+	indexesWindow := []int{0, 1, 2}
+	var unsafeLevels []int
+
+	for (indexesWindow[1] < len(row)) && (len(unsafeLevels) <= 1) {
+		lowValue := row[indexesWindow[0]]
+		midValue := row[indexesWindow[1]]
+
+		firstPairValid := areLevelsValid(lowValue, midValue, ascending)
+
+		endOfSlice := indexesWindow[1] + 1 == len(row)
+		if endOfSlice {
+			if !firstPairValid {
+				unsafeLevels = append(unsafeLevels, indexesWindow[1])
+			}
+		} else {
+			topValue := row[indexesWindow[2]]
+			secondPairValid := areLevelsValid(midValue, topValue, ascending)
+
+			bothValid := firstPairValid && secondPairValid
+			if !bothValid {
+				if secondPairValid {
+					unsafeLevels = append(unsafeLevels, indexesWindow[0])
+				} else if firstPairValid {
+					outsidePairValid := areLevelsValid(lowValue, topValue, ascending)
+
+					if outsidePairValid {
+						unsafeLevels = append(unsafeLevels, indexesWindow[1])
+					} else {
+						unsafeLevels = append(unsafeLevels, indexesWindow[2])
+					}
+				} else {
+					outsidePairValid := areLevelsValid(lowValue, topValue, ascending)
+					if outsidePairValid {
+						unsafeLevels = append(unsafeLevels, indexesWindow[1])
+					} else {
+						unsafeLevels = append(unsafeLevels, indexesWindow[0])
+						unsafeLevels = append(unsafeLevels, indexesWindow[1])
+					}
+				}
+			}
+		}
+
+		indexesWindow = moveIndexesWindow(indexesWindow, unsafeLevels)
+	}
+
+	return len(unsafeLevels) <= 1
 }
 
 func isRowValid(row Row, unsafetyThreshold int) bool {
@@ -111,6 +168,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 				// which one is unsafe? could be that the first one is unsafe ...
 				lowerValue = row[lowerIndex]
 				upperValue = row[upperIndex + 1]
+
 				valid = areLevelsValid(lowerValue, upperValue, ascending)
 
 				if valid {
@@ -127,7 +185,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 				unsafeLevels = append(unsafeLevels, upperIndex)
 			}
 
-			lowerIndex = increasedLowerIndex(lowerIndex, upperIndex, unsafeLevels)
+			lowerIndex = increasedLowerIndex(lowerIndex, len(row), unsafeLevels)
 		}
 		upperIndex = lowerIndex + 1
 	}
@@ -136,7 +194,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 }
 
 func day2Part1() int {
-	lines := readFileLines("./day2.input.txt")
+	lines := readFileLines("./inputs/day2.input.txt")
 	rows := getIntRows(lines)
 
 	validRowsCounter := 0
@@ -151,20 +209,22 @@ func day2Part1() int {
 }
 
 func day2Part2() int {
-	// 668 too low
-	// 671 too low
-	// 679 too high
-	lines := readFileLines("./day2.input.txt")
+	lines := readFileLines("./inputs/day2.input.txt")
 	rows := getIntRows(lines)
 
 	validRowsCounter := 0
-	for i := 0; i < 5; i++ {
-		fmt.Print(rows[i])
-		if isRowValid(rows[i], 1) {
-			fmt.Print(" valid!!")
+	for i := 0; i < len(rows); i++ {
+		fmt.Print(i + 1, "	")
+
+		valid := isRowValidWindow(rows[i])
+
+		if valid {
+			fmt.Print("✅ ")
 			validRowsCounter++
+		} else {
+			fmt.Print("❌ ")
 		}
-		fmt.Println("")
+		fmt.Println(rows[i])
 	}
 
 	fmt.Println(validRowsCounter)

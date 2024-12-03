@@ -26,6 +26,12 @@ func main() {
 		} else {
 			day2Part2()
 		}
+	case 3:
+		if *part == 1 {
+			day3Part1()
+		} else {
+			day3Part2()
+		}
 	default:
 		fmt.Println("Unknown day: probably I didn't do it 😅")
 	}

@@ -40,7 +40,7 @@ func countOccurrences(n int, col []int) int {
 }
 
 func day1Part1() int {
-	lines := readFileLines("./day1.input.txt")
+	lines := readFileLines("./inputs/day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	totalDistance := 0
@@ -57,7 +57,7 @@ func day1Part1() int {
 func day1Part2() int {
 	similarityScore := 0
 
-	lines := readFileLines("./day1.input.txt")
+	lines := readFileLines("./inputs/day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	for _, locationId := range(leftColumn) {
