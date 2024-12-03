@@ -1,59 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"sort"
-	"strconv"
 	"strings"
 )
-
-func readFileLines() []string {
-	var lines []string
-
-	// Open the file
-	file, err := os.Open("day1.input.txt")
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-		return lines
-	}
-	defer file.Close() // Ensure the file is closed when the function ends
-
-	// Create a new scanner
-	scanner := bufio.NewScanner(file)
-
-	// Read each line
-	for scanner.Scan() {
-		line := scanner.Text()
-		lines = append(lines, line)
-	}
-
-	// Check for errors in scanning
-	if err := scanner.Err(); err != nil {
-		fmt.Println("Error reading file:", err)
-	}
-
-	return lines
-}
-
-func stringToInt(s string) int {
-	number, err := strconv.Atoi(s)
-
-	if err != nil {
-		fmt.Println("Error converting the string to a number")
-		return -1
-	}
-
-	return number
-}
-
-func absolute(n int) int {
-	if n < 0 {
-		return -n
-	}
-	return n
-}
 
 func columns(lines []string) ([]int, []int) {
 	var leftColumn	[]int
@@ -89,7 +40,7 @@ func countOccurrences(n int, col []int) int {
 }
 
 func day1Part1() int {
-	lines := readFileLines()
+	lines := readFileLines("./day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	totalDistance := 0
@@ -106,7 +57,7 @@ func day1Part1() int {
 func day1Part2() int {
 	similarityScore := 0
 
-	lines := readFileLines()
+	lines := readFileLines("./day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	for _, locationId := range(leftColumn) {
