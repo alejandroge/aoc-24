@@ -36,7 +36,6 @@ func day3Part1() int {
 func day3Part2() int {
 	lines := readFileLines("./inputs/day3.input.txt")
 
-	// 8707977 too low
 	pattern := `mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don\'t\(\)`
 	r, err := regexp.Compile(pattern)
 	if err != nil {
