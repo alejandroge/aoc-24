@@ -194,7 +194,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 }
 
 func day2Part1() int {
-	lines := readFileLines("./inputs/day2.input.txt")
+	lines := readFileLines("./inputs/day2.test.txt")
 	rows := getIntRows(lines)
 
 	validRowsCounter := 0
