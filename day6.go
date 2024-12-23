@@ -3,16 +3,14 @@ package main
 import "fmt"
 
 type MapCell struct {
-    // don't love this actually, status works kinda nicely for blocked, or initial position of guard, but feels a bit
-    // weird when combined with "visited" logic, tho the visit counter kinda helps making it work. Might just leave like
-    // that
 	status      rune
+    posX        int
+    posY        int
     visitNumber int
 }
 
 type Guard struct {
-    xPosition   int
-    yPosition   int
+    positionPtr *MapCell
     orientation rune
 }
 
@@ -24,20 +22,22 @@ func initMap(lines []string) ([][]MapCell, Guard) {
 		gameMap[i] = make([]MapCell, mapLen)
 	}
 
-    guard := Guard{xPosition: -1, yPosition: -1, orientation: 'u'}
+    guard := Guard{positionPtr: nil, orientation: 'u'}
 
 	for y := 0; y < mapLen; y++ {
 		for x := 0; x < mapLen; x++ {
 			line := []rune(lines[y])
 			rune := line[x]
+
+            gameMap[y][x].posX = x
+            gameMap[y][x].posY = y
 			gameMap[y][x].status = rune
 			gameMap[y][x].visitNumber = 0
 
             if rune == '^' {
                 gameMap[y][x].visitNumber = 1
 
-                guard.xPosition = x
-                guard.yPosition = y
+                guard.positionPtr = &gameMap[y][x]
                 guard.orientation = 'u'
             }
 		}
@@ -47,91 +47,152 @@ func initMap(lines []string) ([][]MapCell, Guard) {
 }
 
 func printMapCell(cell MapCell) {
-    fmt.Printf("%c", cell.status)
+	colorRed := "\033[31m"
+	colorReset := "\033[0m"
+
+	if cell.status == '#' {
+		fmt.Printf("%s%c%s", colorRed, cell.status, colorReset)
+	} else {
+		fmt.Printf("%c", cell.status)
+	}
 }
 
-func nextCell(guard *Guard, gameMap *[][]GameCell, orientation rune) MapCell {
-    mapLen := len(*gameMap)
-    y, x := (*guard.yPosition, *guard.xPosition)
+func printMap(gameMapPtr *[][]MapCell) {
+    gameMap := *gameMapPtr
+    mapLen  := len(gameMap)
 
-    switch *guard.orientation {
-    case 'u':
-        return *gameMap[y-1][x];
-    case 'r':
-        return *gameMap[y][x+1];
-    case 'd':
-        return *gameMap[y+1][x];
-    case 'l':
-        return *gameMap[y][x-1];
-    }
-}
-
-func moveGuardForward(guard *Guard, gameMap *[][]MapCell) error {
-    return nil
-}
-
-func turnGuard(guard *Guard) {
-    currentOrientation := *guard.orientation
-
-    switch currentOrientation {
-    case 'u':
-        *guard.orientation = 'r'
-    case 'r':
-        *guard.orientation = 'd'
-    case 'd':
-        *guard.orientation = 'l'
-    case 'l':
-        *guard.orientation = 'u'
-    default:
-        fmt.Println("something went wrong, this is not an expected orientation")
-    }
-}
-
-func day6Part1() {
-    lines := readFileLines("./inputs/day6.test.txt")
-    gameMap, guard := initMap(lines)
-
-    for y := 0; y < len(gameMap); y++ {
-        for x := 0; x < len(gameMap); x++ {
+    for y := 0; y < mapLen; y++ {
+        for x := 0; x < mapLen; x++ {
             printMapCell(gameMap[y][x])
         }
         fmt.Println("")
     }
     fmt.Println("")
+}
 
-    // main loop for moving the guard around. Limit to 100 now, so I don't loop infinitely all the time during testing
-    for i := 0; i < 100; i++ {
+func getNextCell(guardPtr *Guard, gameMapPtr *[][]MapCell) (*MapCell, error) {
+    gameMap := *gameMapPtr
+    mapLen := len(gameMap)
+
+    guardCurrentCellPtr := guardPtr.positionPtr
+    y                   := guardCurrentCellPtr.posY
+    x                   := guardCurrentCellPtr.posX
+
+    switch guardPtr.orientation {
+    case 'u':
+        if (y-1) < 0 {
+            return nil, fmt.Errorf("tried to move out of bounds")
+        }
+        return &(gameMap[y-1][x]), nil;
+    case 'r':
+        if (x+1) >= mapLen {
+            return nil, fmt.Errorf("tried to move out of bounds")
+        }
+        return &(gameMap[y][x+1]), nil;
+    case 'd':
+        if (y+1) >= mapLen {
+            return nil, fmt.Errorf("tried to move out of bounds")
+        }
+        return &(gameMap[y+1][x]), nil;
+    case 'l':
+        if (x-1) < 0 {
+            return nil, fmt.Errorf("tried to move out of bounds")
+        }
+        return &(gameMap[y][x-1]), nil;
+    default:
+        return nil, fmt.Errorf("unexpected orientation")
+    }
+}
+
+func moveGuardForward(guardPtr *Guard, gameMapPtr *[][]MapCell) error {
+    nextCellPtr, err := getNextCell(guardPtr, gameMapPtr)
+
+    if err != nil {
+        return fmt.Errorf("tried to move out of bounds, play should be over")
+    }
+
+    for nextCellPtr.status != '#' {
+        guardPtr.positionPtr.status = 'X'
+        guardPtr.positionPtr = nextCellPtr
+
+        nextCellPtr.visitNumber++
+        nextCellPtr.status = '^'
+
+        nextCellPtr, err = getNextCell(guardPtr, gameMapPtr)
+        if err != nil {
+            return fmt.Errorf("tried to move out of bounds, play should be over")
+        }
+    }
+
+
+    return nil
+}
+
+func turnGuard(guardPtr *Guard) error {
+    switch guardPtr.orientation {
+    case 'u':
+        guardPtr.orientation = 'r'
+    case 'r':
+        guardPtr.orientation = 'd'
+    case 'd':
+        guardPtr.orientation = 'l'
+    case 'l':
+        guardPtr.orientation = 'u'
+    default:
+        return fmt.Errorf("something went wrong, this is not an expected orientation")
+    }
+    return nil
+}
+
+func getNumberOfVisitedCells(gameMapPtr *[][]MapCell) int {
+    gameMap := *gameMapPtr
+    mapLen  := len(gameMap)
+
+    countOfVisited := 0
+    for y := 0; y < mapLen; y++ {
+        for x := 0; x < mapLen; x++ {
+            currentCell := gameMap[y][x]
+            if currentCell.visitNumber > 0 {
+                countOfVisited++
+            }
+        }
+    }
+
+    return countOfVisited
+}
+
+func day6Part1() {
+    lines := readFileLines("./inputs/day6.input.txt")
+    gameMap, guard := initMap(lines)
+
+    for {
         if err := moveGuardForward(&guard, &gameMap); err != nil {
             // tried to move outside of the map, should stop the loop at this point
+            break
         }
         turnGuard(&guard)
     }
 
-    visitedAtLeastOnce := getVisitedCells(&gameMap)
+    printMap(&gameMap)
+    numberOfVisitedCells := getNumberOfVisitedCells(&gameMap)
 
-    fmt.Println("guard is on x:", guard.xPosition, "and y:", guard.yPosition)
-    fmt.Println("visited", len(visitedCells), "different cells")
+    fmt.Println("visited", numberOfVisitedCells, "different cells")
 }
 
 func day6Part2() {
     lines := readFileLines("./inputs/day6.test.txt")
     gameMap, guard := initMap(lines)
 
-    for y := 0; y < len(gameMap); y++ {
-        for x := 0; x < len(gameMap); x++ {
-            printMapCell(gameMap[y][x])
-        }
-        fmt.Println("")
-    }
-    fmt.Println("")
-
     // main loop for moving the guard around
     for i := 0; i < 100; i++ {
         if err := moveGuardForward(&guard, &gameMap); err != nil {
             // tried to move outside of the map, should stop the loop at this point
+            break
         }
         turnGuard(&guard)
     }
+
+    printMap(&gameMap)
 
     fmt.Println(guard)
 }
