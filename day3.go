@@ -17,7 +17,7 @@ func day3Part1() int {
 
 	numberOfMatches := 0
 	sum := 0
-	for _, line := range(lines) {
+	for _, line := range lines {
 		matches := r.FindAllStringSubmatch(line, -1)
 
 		numberOfMatches += len(matches)
@@ -50,7 +50,7 @@ func day3Part2() int {
 	enable_command := "do()"
 	disable_command := "don't()"
 
-	for _, line := range(lines) {
+	for _, line := range lines {
 		matches := r.FindAllStringSubmatch(line, -1)
 
 		numberOfMatches += len(matches)

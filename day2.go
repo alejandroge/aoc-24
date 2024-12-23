@@ -10,11 +10,11 @@ type Row []int
 func getIntRows(lines []string) []Row {
 	var rows []Row
 
-	for _, line := range(lines) {
+	for _, line := range lines {
 		levels := strings.Fields(line)
 
 		var row Row
-		for _, level := range(levels) {
+		for _, level := range levels {
 			row = append(row, stringToInt(level))
 		}
 
@@ -46,7 +46,7 @@ func isAscending(row Row) bool {
 
 	for i := 1; i < len(row); i++ {
 		upperValue := row[i]
-		lowerValue := row[i - 1]
+		lowerValue := row[i-1]
 
 		delta := upperValue - lowerValue
 
@@ -65,7 +65,7 @@ func increasedLowerIndex(lowerIndex int, arrayLen int, unsafeLevels []int) int {
 	for potentialNewIndex < arrayLen {
 		valid := true
 
-		for _, unsafeIndex := range(unsafeLevels) {
+		for _, unsafeIndex := range unsafeLevels {
 			if potentialNewIndex == unsafeIndex {
 				valid = false
 			}
@@ -106,7 +106,7 @@ func isRowValidWindow(row Row) bool {
 
 		firstPairValid := areLevelsValid(lowValue, midValue, ascending)
 
-		endOfSlice := indexesWindow[1] + 1 == len(row)
+		endOfSlice := indexesWindow[1]+1 == len(row)
 		if endOfSlice {
 			if !firstPairValid {
 				unsafeLevels = append(unsafeLevels, indexesWindow[1])
@@ -167,7 +167,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 			if (upperIndex + 1) < len(row) {
 				// which one is unsafe? could be that the first one is unsafe ...
 				lowerValue = row[lowerIndex]
-				upperValue = row[upperIndex + 1]
+				upperValue = row[upperIndex+1]
 
 				valid = areLevelsValid(lowerValue, upperValue, ascending)
 
@@ -178,7 +178,7 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 						unsafeLevels = append(unsafeLevels, lowerIndex)
 					} else {
 						unsafeLevels = append(unsafeLevels, upperIndex)
-						unsafeLevels = append(unsafeLevels, upperIndex + 1)
+						unsafeLevels = append(unsafeLevels, upperIndex+1)
 					}
 				}
 			} else {
@@ -214,7 +214,7 @@ func day2Part2() int {
 
 	validRowsCounter := 0
 	for i := 0; i < len(rows); i++ {
-		fmt.Print(i + 1, "	")
+		fmt.Print(i+1, "	")
 
 		valid := isRowValidWindow(rows[i])
 
@@ -230,4 +230,3 @@ func day2Part2() int {
 	fmt.Println(validRowsCounter)
 	return validRowsCounter
 }
-

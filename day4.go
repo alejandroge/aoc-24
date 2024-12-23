@@ -3,23 +3,23 @@ package main
 import "fmt"
 
 type Cell struct {
-	value		rune
-	inWord	bool
+	value  rune
+	inWord bool
 }
 
 func isXMasValid(crosswordGamePtr *[][]Cell, i int, j int) bool {
 	crosswordGame := *crosswordGamePtr
 
-	topLeftCell 		:= crosswordGame[i - 1][j - 1]
-	bottomLeftCell	:= crosswordGame[i + 1][j - 1]
-	topRightCell		:= crosswordGame[i - 1][j + 1]
-	bottomRightCell	:= crosswordGame[i + 1][j + 1]
+	topLeftCell := crosswordGame[i-1][j-1]
+	bottomLeftCell := crosswordGame[i+1][j-1]
+	topRightCell := crosswordGame[i-1][j+1]
+	bottomRightCell := crosswordGame[i+1][j+1]
 
 	outsideCells := []Cell{topLeftCell, bottomLeftCell, topRightCell, bottomRightCell}
 	mCount := 0
 	sCount := 0
 
-	for _, cell := range(outsideCells) {
+	for _, cell := range outsideCells {
 		if cell.value == 'M' {
 			mCount++
 		} else if cell.value == 'S' {
@@ -31,11 +31,10 @@ func isXMasValid(crosswordGamePtr *[][]Cell, i int, j int) bool {
 		return false
 	}
 
-
-	mainDiagValid	:= (topLeftCell.value == 'M' && bottomRightCell.value == 'S') ||
-			(bottomRightCell.value == 'M' && topLeftCell.value == 'S')
-	revDiagValid	:= (topRightCell.value == 'M' && bottomLeftCell.value == 'S') ||
-			(bottomLeftCell.value == 'M' && topRightCell.value == 'S')
+	mainDiagValid := (topLeftCell.value == 'M' && bottomRightCell.value == 'S') ||
+		(bottomRightCell.value == 'M' && topLeftCell.value == 'S')
+	revDiagValid := (topRightCell.value == 'M' && bottomLeftCell.value == 'S') ||
+		(bottomLeftCell.value == 'M' && topRightCell.value == 'S')
 
 	return mainDiagValid && revDiagValid
 }
@@ -44,10 +43,10 @@ func markCrossAsValid(crosswordGamePtr *[][]Cell, i int, j int) {
 	crosswordGame := *crosswordGamePtr
 
 	crosswordGame[i][j].inWord = true
-	crosswordGame[i - 1][j - 1].inWord = true
-  crosswordGame[i + 1][j - 1].inWord = true
-	crosswordGame[i - 1][j + 1].inWord = true
-	crosswordGame[i + 1][j + 1].inWord = true
+	crosswordGame[i-1][j-1].inWord = true
+	crosswordGame[i+1][j-1].inWord = true
+	crosswordGame[i-1][j+1].inWord = true
+	crosswordGame[i+1][j+1].inWord = true
 }
 
 func scanHorizontalXMas(crosswordGamePtr *[][]Cell) int {
@@ -82,7 +81,7 @@ func scanHorizontal(crosswordGamePtr *[][]Cell, matchingString string) int {
 
 	count := 0
 
-	for i:= 0; i < rowLen; i++ {
+	for i := 0; i < rowLen; i++ {
 		j := 0
 		for j < (colLen - 3) {
 			firstCell := crosswordGame[i][j]
@@ -90,22 +89,22 @@ func scanHorizontal(crosswordGamePtr *[][]Cell, matchingString string) int {
 			if firstCell.value != runesToMatch[0] {
 				j++
 			} else {
-				secondCell := crosswordGame[i][j + 1]
+				secondCell := crosswordGame[i][j+1]
 
 				if secondCell.value != runesToMatch[1] {
 					j++
 				} else {
-					thirdCell := crosswordGame[i][j + 2]
+					thirdCell := crosswordGame[i][j+2]
 
 					if thirdCell.value != runesToMatch[2] {
 						j = j + 2
 					} else {
-						fourthCell := crosswordGame[i][j + 3]
+						fourthCell := crosswordGame[i][j+3]
 
 						if fourthCell.value == runesToMatch[3] {
 							count++
 							for offset := 0; offset < 4; offset++ {
-								crosswordGame[i][j + offset].inWord = true
+								crosswordGame[i][j+offset].inWord = true
 							}
 						}
 						j = j + 3
@@ -127,7 +126,7 @@ func scanVertical(crosswordGamePtr *[][]Cell, matchingString string) int {
 
 	count := 0
 
-	for j:= 0; j < colLen; j++ {
+	for j := 0; j < colLen; j++ {
 		i := 0
 		for i < (rowLen - 3) {
 			firstCell := crosswordGame[i][j]
@@ -135,22 +134,22 @@ func scanVertical(crosswordGamePtr *[][]Cell, matchingString string) int {
 			if firstCell.value != runesToMatch[0] {
 				i++
 			} else {
-				secondCell := crosswordGame[i + 1][j]
+				secondCell := crosswordGame[i+1][j]
 
 				if secondCell.value != runesToMatch[1] {
 					i++
 				} else {
-					thirdCell := crosswordGame[i + 2][j]
+					thirdCell := crosswordGame[i+2][j]
 
 					if thirdCell.value != runesToMatch[2] {
 						i = i + 2
 					} else {
-						fourthCell := crosswordGame[i + 3][j]
+						fourthCell := crosswordGame[i+3][j]
 
 						if fourthCell.value == runesToMatch[3] {
 							count++
 							for offset := 0; offset < 4; offset++ {
-								crosswordGame[i + offset][j].inWord = true
+								crosswordGame[i+offset][j].inWord = true
 							}
 						}
 						i = i + 3
@@ -172,7 +171,7 @@ func scanDiagonalTopToBottom(crosswordGamePtr *[][]Cell, matchingString string) 
 
 	count := 0
 
-	for i:= 0; i < (rowLen - 3); i++ {
+	for i := 0; i < (rowLen - 3); i++ {
 		j := 0
 		for j < (colLen - 3) {
 			firstCell := crosswordGame[i][j]
@@ -180,22 +179,22 @@ func scanDiagonalTopToBottom(crosswordGamePtr *[][]Cell, matchingString string) 
 			if firstCell.value != runesToMatch[0] {
 				j++
 			} else {
-				secondCell := crosswordGame[i + 1][j + 1]
+				secondCell := crosswordGame[i+1][j+1]
 
 				if secondCell.value != runesToMatch[1] {
 					j++
 				} else {
-					thirdCell := crosswordGame[i + 2][j + 2]
+					thirdCell := crosswordGame[i+2][j+2]
 
 					if thirdCell.value != runesToMatch[2] {
 						j++
 					} else {
-						fourthCell := crosswordGame[i + 3][j + 3]
+						fourthCell := crosswordGame[i+3][j+3]
 
 						if fourthCell.value == runesToMatch[3] {
 							count++
 							for offset := 0; offset < 4; offset++ {
-								crosswordGame[i + offset][j + offset].inWord = true
+								crosswordGame[i+offset][j+offset].inWord = true
 							}
 						}
 
@@ -226,23 +225,23 @@ func scanDiagonalBottomToTop(crosswordGamePtr *[][]Cell, matchingString string) 
 			if firstCell.value != runesToMatch[0] {
 				j++
 			} else {
-				secondCell := crosswordGame[i - 1][j + 1]
+				secondCell := crosswordGame[i-1][j+1]
 
 				if secondCell.value != runesToMatch[1] {
 					j++
 				} else {
-					thirdCell := crosswordGame[i - 2][j + 2]
+					thirdCell := crosswordGame[i-2][j+2]
 
 					if thirdCell.value != runesToMatch[2] {
 						// nothing, jump ahead
 						j++
 					} else {
-						fourthCell := crosswordGame[i - 3][j + 3]
+						fourthCell := crosswordGame[i-3][j+3]
 
 						if fourthCell.value == runesToMatch[3] {
 							count++
 							for offset := 0; offset < 4; offset++ {
-								crosswordGame[i - offset][j + offset].inWord = true
+								crosswordGame[i-offset][j+offset].inWord = true
 							}
 						}
 
@@ -257,11 +256,11 @@ func scanDiagonalBottomToTop(crosswordGamePtr *[][]Cell, matchingString string) 
 }
 
 func initCrossWord(lines []string) [][]Cell {
-	rowLen	:= len(lines)
-	colLen	:= len(lines[0])
+	rowLen := len(lines)
+	colLen := len(lines[0])
 
 	crosswordGame := make([][]Cell, rowLen)
-	for i := range(crosswordGame) {
+	for i := range crosswordGame {
 		crosswordGame[i] = make([]Cell, colLen)
 	}
 
@@ -288,8 +287,8 @@ func printCell(cell Cell) {
 }
 
 func day4Part1() int {
-	lines 				:= readFileLines("./inputs/day4.input.txt")
-	count 				:= 0
+	lines := readFileLines("./inputs/day4.input.txt")
+	count := 0
 
 	crosswordGame := initCrossWord(lines)
 
@@ -305,8 +304,8 @@ func day4Part1() int {
 	count += scanDiagonalBottomToTop(&crosswordGame, "XMAS")
 	count += scanDiagonalBottomToTop(&crosswordGame, "SAMX")
 
-	columnLen	:= len(lines[0])
-	rowLen		:= len(lines)
+	columnLen := len(lines[0])
+	rowLen := len(lines)
 
 	for i := 0; i < rowLen; i++ {
 		for j := 0; j < columnLen; j++ {
@@ -326,8 +325,8 @@ func day4Part2() int {
 	crosswordGame := initCrossWord(lines)
 	count := scanHorizontalXMas(&crosswordGame)
 
-	colLen	:= len(lines[0])
-	rowLen	:= len(lines)
+	colLen := len(lines[0])
+	rowLen := len(lines)
 
 	for i := 0; i < rowLen; i++ {
 		for j := 0; j < colLen; j++ {
