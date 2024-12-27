@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	utils "aoc-24/utils"
+)
 
 type Cell struct {
 	value  rune
@@ -286,8 +290,8 @@ func printCell(cell Cell) {
 	}
 }
 
-func day4Part1() int {
-	lines := readFileLines("./inputs/day4.input.txt")
+func day4Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day4.input.txt")
 	count := 0
 
 	crosswordGame := initCrossWord(lines)
@@ -320,8 +324,8 @@ func day4Part1() int {
 	return count
 }
 
-func day4Part2() int {
-	lines := readFileLines("./inputs/day4.input.txt")
+func day4Part2(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day4.input.txt")
 	crosswordGame := initCrossWord(lines)
 	count := scanHorizontalXMas(&crosswordGame)
 

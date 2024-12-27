@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	utils "aoc-24/utils"
+)
 
 type MapCell struct {
 	status      rune
@@ -160,8 +164,8 @@ func getNumberOfVisitedCells(gameMapPtr *[][]MapCell) int {
 	return countOfVisited
 }
 
-func day6Part1() {
-	lines := readFileLines("./inputs/day6.input.txt")
+func day6Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day6.input.txt")
 	gameMap, guard := initMap(lines)
 
 	for {
@@ -176,22 +180,5 @@ func day6Part1() {
 	numberOfVisitedCells := getNumberOfVisitedCells(&gameMap)
 
 	fmt.Println("visited", numberOfVisitedCells, "different cells")
-}
-
-func day6Part2() {
-	lines := readFileLines("./inputs/day6.test.txt")
-	gameMap, guard := initMap(lines)
-
-	// main loop for moving the guard around
-	for i := 0; i < 100; i++ {
-		if err := moveGuardForward(&guard, &gameMap); err != nil {
-			// tried to move outside of the map, should stop the loop at this point
-			break
-		}
-		turnGuard(&guard)
-	}
-
-	printMap(&gameMap)
-
-	fmt.Println(guard)
+	return numberOfVisitedCells
 }

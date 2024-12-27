@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"regexp"
+
+	utils "aoc-24/utils"
 )
 
-func day3Part1() int {
-	lines := readFileLines("./inputs/day3.input.txt")
+func day3Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day3.input.txt")
 
 	pattern := `mul\((\d{1,3}),(\d{1,3})\)`
 	r, err := regexp.Compile(pattern)
@@ -23,7 +25,7 @@ func day3Part1() int {
 		numberOfMatches += len(matches)
 		for i := 0; i < len(matches); i++ {
 			match := matches[i]
-			matchResult := stringToInt(match[1]) * stringToInt(match[2])
+			matchResult := utils.StringToInt(match[1]) * utils.StringToInt(match[2])
 			sum += matchResult
 		}
 	}
@@ -33,8 +35,8 @@ func day3Part1() int {
 	return sum
 }
 
-func day3Part2() int {
-	lines := readFileLines("./inputs/day3.input.txt")
+func day3Part2(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day3.input.txt")
 
 	pattern := `mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don\'t\(\)`
 	r, err := regexp.Compile(pattern)
@@ -64,7 +66,7 @@ func day3Part2() int {
 				enabled = false
 			default:
 				if enabled {
-					matchResult := stringToInt(match[1]) * stringToInt(match[2])
+					matchResult := utils.StringToInt(match[1]) * utils.StringToInt(match[2])
 					sum += matchResult
 				}
 			}

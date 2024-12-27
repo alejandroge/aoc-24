@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	"aoc-24/utils"
 )
 
 type Row []int
@@ -15,7 +17,7 @@ func getIntRows(lines []string) []Row {
 
 		var row Row
 		for _, level := range levels {
-			row = append(row, stringToInt(level))
+			row = append(row, utils.StringToInt(level))
 		}
 
 		rows = append(rows, row)
@@ -33,7 +35,7 @@ func isDirectionValid(ascending bool, a int, b int) bool {
 }
 
 func isIncreaseValid(a int, b int) bool {
-	difference := absolute(a - b)
+	difference := utils.Absolute(a - b)
 	if difference < 1 || difference > 3 {
 		return false
 	}
@@ -193,8 +195,8 @@ func isRowValid(row Row, unsafetyThreshold int) bool {
 	return len(unsafeLevels) <= unsafetyThreshold
 }
 
-func day2Part1() int {
-	lines := readFileLines("./inputs/day2.test.txt")
+func day2Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day2.test.txt")
 	rows := getIntRows(lines)
 
 	validRowsCounter := 0
@@ -208,8 +210,8 @@ func day2Part1() int {
 	return validRowsCounter
 }
 
-func day2Part2() int {
-	lines := readFileLines("./inputs/day2.input.txt")
+func day2Part2(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day2.input.txt")
 	rows := getIntRows(lines)
 
 	validRowsCounter := 0

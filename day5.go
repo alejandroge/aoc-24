@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
+
+	utils "aoc-24/utils"
 )
 
 func splitAndConvertLine(line string, delimiter string) []int {
@@ -11,7 +13,7 @@ func splitAndConvertLine(line string, delimiter string) []int {
 	splittedStrings := strings.Split(line, delimiter)
 
 	for _, numberAsString := range splittedStrings {
-		result = append(result, stringToInt(numberAsString))
+		result = append(result, utils.StringToInt(numberAsString))
 	}
 
 	return result
@@ -141,8 +143,8 @@ func isUpdateValid(update []int, rules [][]int) bool {
 	return updateValid
 }
 
-func day5Part1() int {
-	lines := readFileLines("./inputs/day5.input.txt")
+func day5Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day5.input.txt")
 	rules, updates := splitRulesAndUpdates(lines)
 
 	var validUpdates [][]int
@@ -170,17 +172,5 @@ func day5Part1() int {
 	}
 
 	fmt.Println("Result:", count) // 4872
-	return count
-}
-
-func day5Part2() int {
-	count := 0
-
-	lines := readFileLines("./inputs/day5.test.txt")
-	rules, updates := splitRulesAndUpdates(lines)
-
-	fmt.Println("len rules", len(rules))
-	fmt.Println("len updates", len(updates))
-
 	return count
 }

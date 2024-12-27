@@ -1,4 +1,4 @@
-package main
+package utils
 
 import (
 	"bufio"
@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-func readFileLines(filePath string) []string {
+func ReadFileLines(filePath string) []string {
 	var lines []string
 
 	// Open the file
@@ -35,7 +35,7 @@ func readFileLines(filePath string) []string {
 	return lines
 }
 
-func stringToInt(s string) int {
+func StringToInt(s string) int {
 	number, err := strconv.Atoi(s)
 
 	if err != nil {
@@ -46,7 +46,7 @@ func stringToInt(s string) int {
 	return number
 }
 
-func absolute(n int) int {
+func Absolute(n int) int {
 	if n < 0 {
 		return -n
 	}

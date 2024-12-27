@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sort"
 	"strings"
+
+	"aoc-24/utils"
 )
 
 func columns(lines []string) ([]int, []int) {
@@ -13,8 +15,8 @@ func columns(lines []string) ([]int, []int) {
 	for _, line := range lines {
 		columns := strings.Fields(line)
 
-		leftColumn = append(leftColumn, stringToInt(columns[0]))
-		rightColumn = append(rightColumn, stringToInt(columns[1]))
+		leftColumn = append(leftColumn, utils.StringToInt(columns[0]))
+		rightColumn = append(rightColumn, utils.StringToInt(columns[1]))
 	}
 
 	sort.Ints(leftColumn)
@@ -39,13 +41,13 @@ func countOccurrences(n int, col []int) int {
 	return repetitions
 }
 
-func day1Part1() int {
-	lines := readFileLines("./inputs/day1.input.txt")
+func day1Part1(test bool) int {
+	lines := utils.ReadFileLines("./inputs/day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	totalDistance := 0
 	for i := 0; i < len(leftColumn); i++ {
-		lineDistance := absolute(leftColumn[i] - rightColumn[i])
+		lineDistance := utils.Absolute(leftColumn[i] - rightColumn[i])
 
 		totalDistance += lineDistance
 	}
@@ -54,10 +56,10 @@ func day1Part1() int {
 	return totalDistance
 }
 
-func day1Part2() int {
+func day1Part2(test bool) int {
 	similarityScore := 0
 
-	lines := readFileLines("./inputs/day1.input.txt")
+	lines := utils.ReadFileLines("./inputs/day1.input.txt")
 	leftColumn, rightColumn := columns(lines)
 
 	for _, locationId := range leftColumn {
