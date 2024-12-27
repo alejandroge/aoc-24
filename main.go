@@ -3,21 +3,19 @@ package main
 import (
 	"flag"
 	"fmt"
+
+	"aoc-24/day10"
+	"aoc-24/utils"
 )
 
 func main() {
-	// defined the flags that can be used
-	day := flag.Int("d", 1, "Specify the day you want to run")
-	part := flag.Int("p", 1, "Specify the part you want to run")
-	test := flag.Bool("t", false, "Run with the test input for the current day")
-
-	// parse the flags
+	day := flag.Int("day", 1, "Specify the day you want to run")
+	part := flag.Int("part", 1, "Specify the part you want to run")
+	test := flag.Bool("test", false, "Run with the test input for the current day")
 	flag.Parse()
 
-	// Define the function signature for your day/part functions
 	type dayPartFunc func(test bool) int
 
-	// Create a map to store day/part functions
 	var functions = map[int]map[int]dayPartFunc{
 		1: {
 			1: day1Part1,
@@ -41,13 +39,19 @@ func main() {
 		6: {
 			1: day6Part1,
 		},
-		// Add more days as needed
+		10: {
+			1: day10.Part1,
+		},
 	}
 
-	// Lookup and execute the corresponding function
 	if parts, ok := functions[*day]; ok {
 		if fn, ok := parts[*part]; ok {
-			fn(*test) // Pass the test flag down
+			result := fn(*test)
+
+			if *test {
+				fmt.Printf("%sRunning in test mode. Do not submit this result%s\n", utils.ColorYellow, utils.ColorReset)
+			}
+			fmt.Println("Result:", result)
 		} else {
 			fmt.Println("Invalid part: probably I didn't do it 😅")
 		}

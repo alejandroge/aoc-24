@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	utils "aoc-24/utils"
+	"aoc-24/utils"
 )
 
 func day3Part1(test bool) int {

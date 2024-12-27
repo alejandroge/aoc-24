@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	utils "aoc-24/utils"
+	"aoc-24/utils"
 )
 
 func splitAndConvertLine(line string, delimiter string) []int {

@@ -7,6 +7,15 @@ import (
 	"strconv"
 )
 
+func GetFilePath(day int, test bool) string {
+	fileKind := "input"
+	if test {
+		fileKind = "test"
+	}
+
+	return fmt.Sprintf("./inputs/day%d.%s.txt", day, fileKind)
+}
+
 func ReadFileLines(filePath string) []string {
 	var lines []string
 
@@ -44,6 +53,10 @@ func StringToInt(s string) int {
 	}
 
 	return number
+}
+
+func RuneToInt(r rune) int {
+	return int(r - '0')
 }
 
 func Absolute(n int) int {

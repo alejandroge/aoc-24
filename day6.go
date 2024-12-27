@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	utils "aoc-24/utils"
+	"aoc-24/utils"
 )
 
 type MapCell struct {
